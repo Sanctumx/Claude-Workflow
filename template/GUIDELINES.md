@@ -32,6 +32,25 @@ Hosting changes over a project's life, so the deploy target lives in one place: 
 4. Remove code that only the old host used, once the new host does the same job.
 5. Add an `IDEAS.md` row for the move, and say where the old site still serves until it is deleted there.
 
+## Claude app vs Claude Code
+
+The same setup works in both, with one difference: how the main model is picked.
+
+| | Claude app | Claude Code (terminal or IDE) |
+| --- | --- | --- |
+| Main model | The app's model picker | `opusplan` from `.claude/settings.json`: Opus in plan mode, Sonnet otherwise |
+| Effort for the main model | The app's default; `/effort <level>` sets it | Per model from `settings.json`; `/effort` shows a slider |
+| Subagents' model and effort | From their own files | From their own files |
+| Status line | Not shown | Shown |
+| `CLAUDE.md`, rules, deny-reads, hooks | Apply | Apply |
+
+In the app, keep the picker on Sonnet and switch to Opus by hand for planning, hard areas and judgment calls: the
+switch `opusplan` would make for you. Leaving the picker on Opus for routine work costs about twice as much.
+
+**Checking the setup in a new session:** ask "which model are you?" (Sonnet in the app's default, or Opus in plan
+mode under `opusplan`); ask Claude to open a blocked file (it should be refused); edit a tested file (the tests should
+run). In Claude Code, `/effort` with no level shows the current one.
+
 ## Size budgets
 
 Every session pays to read `CLAUDE.md` and the handoff before doing any work, on whatever model you are using.
