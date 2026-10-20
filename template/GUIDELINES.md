@@ -11,7 +11,7 @@ Use these for every new project. The templates in this folder follow them.
 | `docs/IDEAS.md` | **Ideas ledger**: one line per idea tried, adopted, rejected or open | When an idea is added or tested | Searched (not read) before proposing or testing an idea |
 | `docs/HANDOFF_ARCHIVE.md` | **History**: full write-ups of experiments and decisions, finished work | Appended to | Only when a task needs the history |
 
-Plus three subagents in `.claude/agents/`: `explorer.md` (Haiku, low effort, read-only search), `reviewer.md` (Sonnet, high effort, reviews a finished branch) and `analyst.md` (Opus, high effort, designs experiments and judges results; delete it if the project has none). `.claude/settings.json` sets the project model to `opusplan` (one effort level for both, medium by default), blocks reading of files that waste context, and wires the after-edit hook. `.claude/rules/hard-area.md` is a template for rules that load only when one area's files are opened.
+Plus four subagents in `.claude/agents/`: `planner.md` (Opus, high effort, plans changes before they're built), `explorer.md` (Haiku, low effort, read-only search), `reviewer.md` (Sonnet, high effort, reviews a finished branch) and `analyst.md` (Opus, high effort, designs experiments and judges results; delete it if the project has none). `.claude/settings.json` sets the main session to Sonnet at medium effort, blocks reading of files that waste context, and wires the after-edit hook. `.claude/rules/hard-area.md` is a template for rules that load only when one area's files are opened.
 
 ## Skills hold the process; CLAUDE.md holds the specifics
 
@@ -32,24 +32,27 @@ Hosting changes over a project's life, so the deploy target lives in one place: 
 4. Remove code that only the old host used, once the new host does the same job.
 5. Add an `IDEAS.md` row for the move, and say where the old site still serves until it is deleted there.
 
-## Claude app vs Claude Code
+## Choosing models and effort
 
-The same setup works in both, with one difference: how the main model is picked.
+Pin judgment work to subagents and keep the main session on one model. Each subagent's file sets its model and effort,
+and both the Claude app and Claude Code honor them, so the right effort is picked without anyone touching a setting.
 
-| | Claude app | Claude Code (terminal or IDE) |
-| --- | --- | --- |
-| Main model | The app's model picker | `opusplan` from `.claude/settings.json`: Opus in plan mode, Sonnet otherwise |
-| Effort for the main model | The app's default; `/effort <level>` sets it | One level for `opusplan` as a whole (medium by default); the model picker's Effort row changes it |
-| Subagents' model and effort | From their own files | From their own files |
-| Status line | Not shown | Shown |
-| `CLAUDE.md`, rules, deny-reads, hooks | Apply | Apply |
+- **Main session:** Sonnet at medium. In Claude Code, `.claude/settings.json` sets it (`"model": "sonnet"`,
+  `"effortLevel": "medium"`); in the Claude app, keep the model picker on Sonnet.
+- **Planner** (Opus, high): plans anything bigger than a small fix and every change in a hard area.
+- **Analyst** (Opus, high), **explorer** (Haiku, low), **reviewer** (Sonnet, high): as their files say.
 
-In the app, keep the picker on Sonnet and switch to Opus by hand for planning, hard areas and judgment calls: the
-switch `opusplan` would make for you. Leaving the picker on Opus for routine work costs about twice as much.
+Why not `opusplan` (Opus in plan mode, Sonnet otherwise): it uses one effort level for both, so Opus plans at medium
+unless someone raises it by hand, and every plan-mode toggle is a model switch that re-reads the whole conversation
+uncached. A planner subagent gets high effort automatically and leaves the main session's cache alone. Its cost: it
+doesn't see the conversation, so the main session has to brief it well.
 
-**Checking the setup in a new session:** ask "which model are you?" (Sonnet in the app's default, or Opus in plan
-mode under `opusplan`); ask Claude to open a blocked file (it should be refused); edit a tested file (the tests should
-run). In Claude Code, `/effort` with no level shows the current one.
+Escalate the main session to Opus only for a bug Sonnet has failed twice or a long stretch of hard-area edits, and
+switch back after. Leaving the main session on Opus for routine work costs about twice as much.
+
+**Checking the setup in a new session:** ask "which model are you?" (Sonnet); ask Claude to open a blocked file (it
+should be refused); edit a tested file (the tests should run). The status line shows only in Claude Code's terminal;
+the VS Code extension shows context and the cache clock in the prompt box instead.
 
 ## Size budgets
 

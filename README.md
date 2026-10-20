@@ -1,7 +1,7 @@
 # Claude workflow templates
 
-Starting files for Claude Code projects that use several models efficiently: Opus for planning and judgment, Sonnet for
-building, Haiku for searching, plus a short handoff and an ideas ledger so new chats start cheap.
+Starting files for Claude Code projects that use several models efficiently: Opus subagents for planning and judgment,
+Sonnet for building, Haiku for searching, plus a short handoff and an ideas ledger so new chats start cheap.
 
 ## Use in a new project
 
@@ -25,8 +25,8 @@ questions, fills everything in and checks it. The manual steps below do the same
 | `docs/SESSION_HANDOFF.md` | Current state only, about 150 lines max |
 | `docs/IDEAS.md` | One row per idea tried, adopted, rejected or open |
 | `docs/HANDOFF_ARCHIVE.md` | Full write-ups, read only when needed |
-| `.claude/settings.json` | `opusplan` model, effort per model, deny-read rules, the after-edit hook |
-| `.claude/agents/` | `explorer` (Haiku), `reviewer` (Sonnet), `analyst` (Opus) |
+| `.claude/settings.json` | Main session on Sonnet at medium effort, deny-read rules, the after-edit hook, the status line |
+| `.claude/agents/` | `planner` (Opus), `analyst` (Opus), `explorer` (Haiku), `reviewer` (Sonnet), each with its own effort |
 | `.claude/rules/hard-area.md` | Template for rules that load only when one area's files are opened |
 | `.claude/hooks/after-edit.mjs` | Runs fast unit tests after edits; warns when the handoff grows too long |
 | `.claude/statusline.mjs` | Status line: context, plan usage, cache, branch, and when to `/clear` |
