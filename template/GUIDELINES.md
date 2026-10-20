@@ -30,7 +30,8 @@ Hosting changes over a project's life, so the deploy target lives in one place: 
 3. Stop the old host from building. Prefer a setting in the repo (for example a config whose build check always skips)
    over deleting the config, which can make the old host build again; also stop builds in the old host's own settings.
 4. Remove code that only the old host used, once the new host does the same job.
-5. Add an `IDEAS.md` row for the move, and say where the old site still serves until it is deleted there.
+5. Once the old site is deleted on the old host, remove its config file too (nothing reads it any more).
+6. Add an `IDEAS.md` row for the move, and say where the old site still serves until it is deleted there.
 
 ## Choosing models and effort
 
