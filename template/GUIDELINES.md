@@ -11,7 +11,7 @@ Use these for every new project. The templates in this folder follow them.
 | `docs/IDEAS.md` | **Ideas ledger**: one line per idea tried, adopted, rejected or open | When an idea is added or tested | Searched (not read) before proposing or testing an idea |
 | `docs/HANDOFF_ARCHIVE.md` | **History**: full write-ups of experiments and decisions, finished work | Appended to | Only when a task needs the history |
 
-Plus three subagents in `.claude/agents/`: `explorer.md` (Haiku, low effort, read-only search), `reviewer.md` (Sonnet, high effort, reviews a finished branch) and `analyst.md` (Opus, high effort, designs experiments and judges results; delete it if the project has none). `.claude/settings.json` sets the project model to `opusplan` with Opus at high effort and Sonnet at medium, blocks reading of files that waste context, and wires the after-edit hook. `.claude/rules/hard-area.md` is a template for rules that load only when one area's files are opened.
+Plus three subagents in `.claude/agents/`: `explorer.md` (Haiku, low effort, read-only search), `reviewer.md` (Sonnet, high effort, reviews a finished branch) and `analyst.md` (Opus, high effort, designs experiments and judges results; delete it if the project has none). `.claude/settings.json` sets the project model to `opusplan` (one effort level for both, medium by default), blocks reading of files that waste context, and wires the after-edit hook. `.claude/rules/hard-area.md` is a template for rules that load only when one area's files are opened.
 
 ## Skills hold the process; CLAUDE.md holds the specifics
 
@@ -39,7 +39,7 @@ The same setup works in both, with one difference: how the main model is picked.
 | | Claude app | Claude Code (terminal or IDE) |
 | --- | --- | --- |
 | Main model | The app's model picker | `opusplan` from `.claude/settings.json`: Opus in plan mode, Sonnet otherwise |
-| Effort for the main model | The app's default; `/effort <level>` sets it | Per model from `settings.json`; `/effort` shows a slider |
+| Effort for the main model | The app's default; `/effort <level>` sets it | One level for `opusplan` as a whole (medium by default); the model picker's Effort row changes it |
 | Subagents' model and effort | From their own files | From their own files |
 | Status line | Not shown | Shown |
 | `CLAUDE.md`, rules, deny-reads, hooks | Apply | Apply |
