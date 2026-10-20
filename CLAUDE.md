@@ -1,0 +1,81 @@
+# Working on this repo
+
+Read `docs/SESSION_HANDOFF.md` first for the current state of the project. This file only covers how work gets done.
+Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are in `docs/HANDOFF_ARCHIVE.md`. Search those
+(with the `explorer` subagent) when a task needs them; don't read them whole.
+
+## Ideas and experiments
+
+- Before proposing or testing an idea, have `explorer` search `docs/IDEAS.md` for related keywords. If it was Rejected,
+  say so and re-test only if something changed (new data, different format, a bug in the old test).
+- After a test or a shipped feature: edit its row in place (status and the deciding numbers), add the write-up to the
+  archive, and update "Decisions in force" in the handoff if it was adopted.
+- New ideas get the next number with status Open. Never delete rows.
+
+## Standing rules
+
+- Push, merge or deploy only when I say "push" (or run /release).
+- <Add your own: e.g. "never deploy to X unless asked", "report results in Y metric".>
+
+## Commands
+
+- Install: `<command>`
+- Test: `<command>`
+- Build: `<command>`
+- Run locally: `<command>`
+
+## Workflow
+
+1. **Branch** from an up-to-date main: `git fetch origin && git checkout -b <short-name> origin/main`.
+2. **Design first** for anything bigger than a small fix: a short spec in `docs/specs/`, approved by me before building.
+3. **Test first** where practical: write the failing test, watch it fail, make it pass.
+4. **Commit** in small steps with a type prefix: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
+5. **Review** before merging a feature: run the tests and linter, then the `reviewer` subagent reads the whole branch diff. Fix what matters, each fix with a test.
+6. **Hand off** at the end of a session with `/handoff`: update `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md` and the archive, keep the handoff under about 150 lines, and never push. Pushing is a separate, explicit step.
+
+## Keeping context lean (`.claude/`)
+
+- **Blocked from reading** (`settings.json` deny rules): secrets, dependencies, build output, minified files and lock
+  files, plus <your large data, logs, result files and generated files>. Scripts still read them; to inspect one, run a
+  short snippet that prints only what you need.
+- **Path rules** (`.claude/rules/`): rules for one area load only when its files are opened.
+- **Hook** (`.claude/hooks/after-edit.mjs`): after an edit to tested code it runs the unit tests and reports failures;
+  after an edit to the handoff it warns past 150 lines. Fix what it reports before moving on.
+
+## Model routing
+
+The project model is `opusplan` (`.claude/settings.json`): Opus at high effort in plan mode, Sonnet at medium effort
+everywhere else.
+
+- **Plan mode (Opus)** for anything bigger than a small fix, architecture or data-model decisions, and any change in a
+  hard area. Plan at the start of a task: each plan-mode toggle is a model switch and re-reads the conversation uncached.
+- **Outside plan mode (Sonnet):** UI, pages, plumbing, config, docs, and carrying out plans.
+- **`/model opus`** for a long stretch of edits inside a hard area, or a bug Sonnet has failed to fix twice; tell me when
+  that's needed, since only I can switch. `/model opusplan` afterwards.
+- **Searching and reading:** the `explorer` subagent (Haiku, low effort). Don't read large folders or data files in the
+  main session.
+- **Experiments:** the `analyst` subagent (Opus, high effort) designs each experiment and judges its results. Delete
+  `.claude/agents/analyst.md` if the project has no experiments, data or metrics.
+- **Review:** the `reviewer` subagent (Sonnet, high effort). If the branch touches a hard area, run it on Opus.
+- **One hard question:** `ultrathink` in that prompt deepens one turn without changing settings.
+
+**Hard areas** (subtle mistakes, no crash when wrong): <e.g. `src/engine.js` win-probability math, auth, payments, migrations>
+
+## Release and handoff specifics (read by /release and /handoff)
+
+- **Files:** `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md`, `docs/HANDOFF_ARCHIVE.md`.
+- **Results metric:** <how experiment results are reported, or "none">
+- **Mirror the handoff:** <where a copy goes, e.g. a Claude project, or "none">
+- **Handoff also tracks:** <versions or links worth keeping current, or "nothing extra">
+- **Build check:** <what to build and test before a release, and when it's needed>
+- **Deploy:** <what pushing or merging deploys, and anything never to do>
+- **Never during /release or /handoff:** <e.g. "use my computer", or "nothing">
+
+## Project map
+
+- `<folder or file>`: <one line on what it is>
+- `<folder or file>`: <one line>
+
+## Gotchas
+
+- <Things that went wrong before and how to avoid them. One line each.>

@@ -1,0 +1,34 @@
+{
+  "model": "opusplan",
+  "modelSettings": {
+    "claude-opus-5-5": { "effortLevel": "high" },
+    "claude-sonnet-5-5": { "effortLevel": "medium" }
+  },
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/node_modules/**)",
+      "Read(**/dist/**)",
+      "Read(**/build/**)",
+      "Read(**/*.min.js)",
+      "Read(**/package-lock.json)",
+      "Read(**/yarn.lock)",
+      "Read(**/pnpm-lock.yaml)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/after-edit.mjs\"",
+            "timeout": 150
+          }
+        ]
+      }
+    ]
+  }
+}
