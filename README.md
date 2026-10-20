@@ -26,6 +26,7 @@ building, Haiku for searching, plus a short handoff and an ideas ledger so new c
 | `.claude/agents/` | `explorer` (Haiku), `reviewer` (Sonnet), `analyst` (Opus) |
 | `.claude/rules/hard-area.md` | Template for rules that load only when one area's files are opened |
 | `.claude/hooks/after-edit.mjs` | Runs fast unit tests after edits; warns when the handoff grows too long |
+| `.claude/statusline.mjs` | Status line: context, plan usage, cache, branch, and when to `/clear` |
 
 The `/release` and `/handoff` skills live on the Claude account; they read each project's "Release and handoff
 specifics" section in `CLAUDE.md`.

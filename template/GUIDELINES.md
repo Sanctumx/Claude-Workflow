@@ -87,6 +87,21 @@ has its first real files, and revisit when large files appear.
 - After editing `CLAUDE.md`, clear before relying on the change; it loads only on `/clear`, `/compact` or a restart.
 - Never clear with results that aren't recorded in the handoff or `IDEAS.md`.
 
+### Status line cues
+
+`.claude/statusline.mjs` shows model and effort, context used, the 5-hour plan window, the prompt cache and the git
+branch, plus at most one hint. It runs locally and uses no tokens.
+
+| It shows | Meaning | Do |
+| --- | --- | --- |
+| `ctx` green (under 50%) | Plenty of room | Keep going |
+| `ctx` yellow (50-69%) + "/handoff, then /clear at the next stop" | Past half; cost per message and instruction-following get worse from here | Finish the current step, `/handoff` (or `/release`), `/clear` |
+| `ctx` red (70% or more) | Close to auto-compaction, which you don't control | Stop at the next safe point and do the same now |
+| "cache cold" + "/handoff, then /clear" (context 20% or more) | The cache expired; the next message re-reads everything uncached | `/handoff`, `/clear`, start fresh rather than continue |
+| `5h` red (80% or more) + "near the 5-hour limit" | The plan window is nearly used up | `/handoff` now, so nothing is lost if the limit hits mid-task |
+
+Thresholds are constants at the top of the script.
+
 ## End-of-session routine
 
 1. Update the handoff: state, open items, "Next session starts with".

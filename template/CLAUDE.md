@@ -41,6 +41,8 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - **Path rules** (`.claude/rules/`): rules for one area load only when its files are opened.
 - **Hook** (`.claude/hooks/after-edit.mjs`): after an edit to tested code it runs the unit tests and reports failures;
   after an edit to the handoff it warns past 150 lines. Fix what it reports before moving on.
+- **Status line** (`.claude/statusline.mjs`): model and effort, context %, 5-hour plan usage, cache state, branch,
+  and a hint when it's time to `/handoff` and `/clear` (cues in `GUIDELINES.md`).
 
 ## Model routing
 
