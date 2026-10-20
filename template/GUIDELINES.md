@@ -165,15 +165,30 @@ tools, skills, `CLAUDE.md`) that differs by surface:
 | Claude Code terminal, VS Code | about 35K | 150K | 300K |
 | Claude app (desktop, web) | about 95K, mostly connector tools | about 210K | about 360K |
 
-So in the app a 150K total is only about 55K of work; read the Messages line, not the total. Measure your own
-start-up cost once with `/context` in a fresh chat; turning off unused integrations lowers it. The status line
-(terminal only) adds `CTX_BASELINE` (default 35000) to the two budgets; set it if your fresh total is different.
+So in the app a 150K total is only about 55K of work; read the Messages line, not the total. Turning off unused
+integrations lowers the start-up cost.
 
-### Context warning hook
+You never need to run `/context` to calibrate anything. A hook or Claude can't run it (it is a built-in command whose
+output goes to the screen), but every reply in the session log records its token total, and the start-up cost is the
+smallest total in the log: the first reply, or the lowest point after a `/compact`. The context hooks measure it
+that way on every prompt. The status line (terminal only) can't read the log, so it adds `CTX_BASELINE` (default 35000)
+to the two budgets; set that variable to the total `/context` shows in a fresh chat if yours differs. Set it and the
+hooks use it instead of the measured value.
 
-`.claude/hooks/context-warn.mjs` runs when you send a prompt. It reads the token count from the last reply in the session
-log, subtracts `CTX_BASELINE`, and shows you one line past 115K / 265K of conversation. Claude never sees it, it uses
-no tokens, and it stays silent on any error. It replaces running `/context` by hand where the status line isn't shown.
+### Context hooks
+
+Two hooks share `.claude/hooks/context-usage.mjs`, which reads each reply's token total from the session log and
+subtracts the start-up cost measured as above. A session with a single reply never warns. Both run locally, use no
+tokens, and stay silent on any error.
+
+- `context-warn.mjs` (UserPromptSubmit) shows you one line past 115K / 265K of conversation and gives Claude the same
+  instruction: past 115K finish the current task, don't autorun further tasks, run the handoff routine, tell you to
+  `/clear`; past 265K finish only the step in progress. It replaces running `/context` by hand.
+- `context-stop.mjs` (Stop) fires when a turn ends past 115K with no handoff recorded this session, and blocks the stop
+  once so Claude runs `/handoff` then. Waiting for the turn to end means the task finishes first. It fires once per
+  session and never loops. A session where `/handoff` or `/release` already ran is skipped.
+
+`/clear` itself can't be run by a hook or by Claude, so it stays your step.
 
 ## End-of-session routine
 
