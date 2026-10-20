@@ -169,6 +169,12 @@ So in the app a 150K total is only about 55K of work; read the Messages line, no
 start-up cost once with `/context` in a fresh chat; turning off unused integrations lowers it. The status line
 (terminal only) adds `CTX_BASELINE` (default 35000) to the two budgets; set it if your fresh total is different.
 
+### Context warning hook
+
+`.claude/hooks/context-warn.mjs` runs when you send a prompt. It reads the token count from the last reply in the session
+log, subtracts `CTX_BASELINE`, and shows you one line past 115K / 265K of conversation. Claude never sees it, it uses
+no tokens, and it stays silent on any error. It replaces running `/context` by hand where the status line isn't shown.
+
 ## End-of-session routine
 
 1. Update the handoff: state, open items, "Next session starts with".

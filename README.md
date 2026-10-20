@@ -29,6 +29,7 @@ questions, fills everything in and checks it. The manual steps below do the same
 | `.claude/agents/` | `planner` (Opus), `analyst` (Opus), `reviewer` (Opus), `explorer` (Haiku), each with its own effort |
 | `.claude/rules/hard-area.md` | Template for rules that load only when one area's files are opened |
 | `.claude/hooks/after-edit.mjs` | Runs fast unit tests after edits; warns when the handoff grows too long |
+| `.claude/hooks/context-warn.mjs` | Warns you before a prompt is sent when the conversation passes 115K / 265K tokens, so you needn't run `/context` |
 | `.claude/statusline.mjs` | Status line: context, plan usage, cache, branch, and when to `/clear` |
 
 The `/release` and `/handoff` skills live on the Claude account; they read each project's "Release and handoff
