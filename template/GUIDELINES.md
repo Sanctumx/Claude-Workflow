@@ -20,6 +20,18 @@ Plus three subagents in `.claude/agents/`: `explorer.md` (Haiku, low effort, rea
 - Every improvement to how work gets done is made in two places: in the project, and generalized here (templates,
   skills, this guide). A project-only fix that could apply elsewhere is half done.
 
+## Changing hosts
+
+Hosting changes over a project's life, so the deploy target lives in one place: the **Deploy** line of `CLAUDE.md`'s
+"Release and handoff specifics". Nothing else in the workflow names a host. When a project moves:
+
+1. Set up the new host and confirm a deploy works there before touching the old one.
+2. Update the **Deploy** line, and the handoff's current state, to the new host.
+3. Stop the old host from building. Prefer a setting in the repo (for example a config whose build check always skips)
+   over deleting the config, which can make the old host build again; also stop builds in the old host's own settings.
+4. Remove code that only the old host used, once the new host does the same job.
+5. Add an `IDEAS.md` row for the move, and say where the old site still serves until it is deleted there.
+
 ## Size budgets
 
 Every session pays to read `CLAUDE.md` and the handoff before doing any work, on whatever model you are using.
