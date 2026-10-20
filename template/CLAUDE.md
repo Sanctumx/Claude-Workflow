@@ -43,9 +43,11 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - **Path rules** (`.claude/rules/`): rules for one area load only when its files are opened.
 - **Hook** (`.claude/hooks/after-edit.mjs`): after an edit to tested code it runs the unit tests and reports failures;
   after an edit to the handoff it warns past 150 lines. Fix what it reports before moving on.
-- **Context warning** (`.claude/hooks/context-warn.mjs`): before each prompt it shows me a one-line warning once the
-  conversation passes about 115K tokens (stop past 265K). It works in the app's Claude Code tab, VS Code and the
-  terminal; set `CTX_BASELINE` to your fresh-chat total if it isn't about 35K.
+- **Context hooks** (`.claude/hooks/context-warn.mjs`, `context-stop.mjs`): once the conversation passes about 115K
+  tokens (stop past 265K) I get a one-line warning and you get the same instruction: finish the current task, don't
+  start further plan tasks, run `/handoff`, then tell me to `/clear`. If a turn ends past 115K with no handoff
+  recorded, the Stop hook makes you run it once. They work in the app's Claude Code tab, VS Code and the terminal; set
+  `CTX_BASELINE` to your fresh-chat total if it isn't about 35K.
 - **Status line** (`.claude/statusline.mjs`): model and effort, context %, 5-hour plan usage, cache state, branch,
   and a hint when it's time to `/handoff` and `/clear` (cues in `GUIDELINES.md`). It shows only in the terminal. In
   the Claude app or VS Code panel, run `/context` and plan a break once **Messages** passes about 115K (stop past
