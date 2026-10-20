@@ -149,13 +149,16 @@ branch, plus at most one hint. It runs locally and uses no tokens.
 
 | It shows | Meaning | Do |
 | --- | --- | --- |
-| `ctx` green (under 50%) | Plenty of room | Keep going |
-| `ctx` yellow (50-69%) + "/handoff, then /clear at the next stop" | Past half; cost per message and instruction-following get worse from here | Finish the current step, `/handoff` (or `/release`), `/clear` |
-| `ctx` red (70% or more) | Close to auto-compaction, which you don't control | Stop at the next safe point and do the same now |
-| "cache cold" + "/handoff, then /clear" (context 20% or more) | The cache expired; the next message re-reads everything uncached | `/handoff`, `/clear`, start fresh rather than continue |
+| `ctx` green (under 150K tokens) | Plenty of room | Keep going |
+| `ctx` yellow (150K-299K) + "/handoff, then /clear at the next stop" | Every message now re-sends a large conversation, and instruction-following gets worse | Finish the current step, `/handoff` (or `/release`), `/clear` |
+| `ctx` red (300K or more) + "stop at the next safe point" | Expensive per message, and on a 200K-token model close to auto-compaction | Stop at the next safe point and do the same now |
+| "cache cold" + "/handoff, then /clear" (context 60K or more) | The cache expired; the next message re-reads everything uncached | `/handoff`, `/clear`, start fresh rather than continue |
 | `5h` red (80% or more) + "near the 5-hour limit" | The plan window is nearly used up | `/handoff` now, so nothing is lost if the limit hits mid-task |
 
-Thresholds are constants at the top of the script.
+Thresholds are in tokens, not percent: on a 1M-token window, "half full" is 500K tokens, long past the point where
+a fresh chat is cheaper. A fresh session already starts around 35K (system, tools, skills, `CLAUDE.md`), so 150K is
+about 115K of real work. Without the status line (the VS Code panel, the Claude app), `/context` shows the same
+number; apply the same 150K / 300K rule. The thresholds are constants at the top of the script.
 
 ## End-of-session routine
 
