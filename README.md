@@ -5,6 +5,9 @@ building, Haiku for searching, plus a short handoff and an ideas ledger so new c
 
 ## Use in a new project
 
+**Quickest:** run `/new-project` in the project (a skill on the Claude account). It copies `template/`, asks a few
+questions, fills everything in and checks it. The manual steps below do the same by hand.
+
 1. Copy everything inside `template/` into the new project's root, including the hidden `.claude/` folder.
 2. Start Claude Code there and say: *"Read GUIDELINES.md, then fill in CLAUDE.md, docs/SESSION_HANDOFF.md and
    docs/IDEAS.md for this project. Ask me what you need to know."*
