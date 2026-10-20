@@ -1,81 +1,27 @@
 # Working on this repo
 
-Read `docs/SESSION_HANDOFF.md` first for the current state of the project. This file only covers how work gets done.
-Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are in `docs/HANDOFF_ARCHIVE.md`. Search those
-(with the `explorer` subagent) when a task needs them; don't read them whole.
+This repo holds the general version of the user's Claude Code workflow. Everything a new project copies lives in
+`template/`; `template/CLAUDE.md` is a template full of placeholders, not instructions for this repo.
 
-## Ideas and experiments
+## The user's rules
 
-- Before proposing or testing an idea, have `explorer` search `docs/IDEAS.md` for related keywords. If it was Rejected,
-  say so and re-test only if something changed (new data, different format, a bug in the old test).
-- After a test or a shipped feature: edit its row in place (status and the deciding numbers), add the write-up to the
-  archive, and update "Decisions in force" in the handoff if it was adopted.
-- New ideas get the next number with status Open. Never delete rows.
+- Push only when the user says "push".
+- Every workflow improvement made in a project is generalized here where possible (user, 2026-10-20).
 
-## Standing rules
+## Generalizing an improvement from a project
 
-- Push, merge or deploy only when I say "push" (or run /release).
-- <Add your own: e.g. "never deploy to X unless asked", "report results in Y metric".>
+1. Take the project's version (a rule, a subagent, a setting, a hook, a skill change) and remove what is specific to
+   that project: names, paths, metrics, commands. Put placeholders `<like this>` where the project fills in its own.
+2. Put it in the matching file under `template/`. If it changes a rule or the reasoning behind one, update
+   `template/GUIDELINES.md` too, in the same plain style (short sentences, no project names).
+3. If it adds a file, add a row to the table in `README.md`.
+4. Keep every template file valid as it stands: `template/.claude/settings.json` must parse as JSON, and the hook must
+   run with empty input and with a sample edit (`echo '{"tool_input":{"file_path":"docs/SESSION_HANDOFF.md"}}' | node
+   template/.claude/hooks/after-edit.mjs` from inside `template/`, with `CLAUDE_PROJECT_DIR` set to it).
+5. Commit with a type prefix (`feat:`, `fix:`, `docs:`, `chore:`) and a line naming the project it came from.
 
-## Commands
+## Skills
 
-- Install: `<command>`
-- Test: `<command>`
-- Build: `<command>`
-- Run locally: `<command>`
-
-## Workflow
-
-1. **Branch** from an up-to-date main: `git fetch origin && git checkout -b <short-name> origin/main`.
-2. **Design first** for anything bigger than a small fix: a short spec in `docs/specs/`, approved by me before building.
-3. **Test first** where practical: write the failing test, watch it fail, make it pass.
-4. **Commit** in small steps with a type prefix: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
-5. **Review** before merging a feature: run the tests and linter, then the `reviewer` subagent reads the whole branch diff. Fix what matters, each fix with a test.
-6. **Hand off** at the end of a session with `/handoff`: update `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md` and the archive, keep the handoff under about 150 lines, and never push. Pushing is a separate, explicit step.
-
-## Keeping context lean (`.claude/`)
-
-- **Blocked from reading** (`settings.json` deny rules): secrets, dependencies, build output, minified files and lock
-  files, plus <your large data, logs, result files and generated files>. Scripts still read them; to inspect one, run a
-  short snippet that prints only what you need.
-- **Path rules** (`.claude/rules/`): rules for one area load only when its files are opened.
-- **Hook** (`.claude/hooks/after-edit.mjs`): after an edit to tested code it runs the unit tests and reports failures;
-  after an edit to the handoff it warns past 150 lines. Fix what it reports before moving on.
-
-## Model routing
-
-The project model is `opusplan` (`.claude/settings.json`): Opus at high effort in plan mode, Sonnet at medium effort
-everywhere else.
-
-- **Plan mode (Opus)** for anything bigger than a small fix, architecture or data-model decisions, and any change in a
-  hard area. Plan at the start of a task: each plan-mode toggle is a model switch and re-reads the conversation uncached.
-- **Outside plan mode (Sonnet):** UI, pages, plumbing, config, docs, and carrying out plans.
-- **`/model opus`** for a long stretch of edits inside a hard area, or a bug Sonnet has failed to fix twice; tell me when
-  that's needed, since only I can switch. `/model opusplan` afterwards.
-- **Searching and reading:** the `explorer` subagent (Haiku, low effort). Don't read large folders or data files in the
-  main session.
-- **Experiments:** the `analyst` subagent (Opus, high effort) designs each experiment and judges its results. Delete
-  `.claude/agents/analyst.md` if the project has no experiments, data or metrics.
-- **Review:** the `reviewer` subagent (Sonnet, high effort). If the branch touches a hard area, run it on Opus.
-- **One hard question:** `ultrathink` in that prompt deepens one turn without changing settings.
-
-**Hard areas** (subtle mistakes, no crash when wrong): <e.g. `src/engine.js` win-probability math, auth, payments, migrations>
-
-## Release and handoff specifics (read by /release and /handoff)
-
-- **Files:** `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md`, `docs/HANDOFF_ARCHIVE.md`.
-- **Results metric:** <how experiment results are reported, or "none">
-- **Mirror the handoff:** <where a copy goes, e.g. a Claude project, or "none">
-- **Handoff also tracks:** <versions or links worth keeping current, or "nothing extra">
-- **Build check:** <what to build and test before a release, and when it's needed>
-- **Deploy:** <what pushing or merging deploys, and anything never to do>
-- **Never during /release or /handoff:** <e.g. "use my computer", or "nothing">
-
-## Project map
-
-- `<folder or file>`: <one line on what it is>
-- `<folder or file>`: <one line>
-
-## Gotchas
-
-- <Things that went wrong before and how to avoid them. One line each.>
+`/release` and `/handoff` live on the user's Claude account, not here. They read each project's "Release and handoff
+specifics" section in its `CLAUDE.md`. A change to how they work is proposed as a skill update, and the matching section
+in `template/CLAUDE.md` is updated here.

@@ -5,13 +5,13 @@ building, Haiku for searching, plus a short handoff and an ideas ledger so new c
 
 ## Use in a new project
 
-1. Copy everything here except this README into the new project's root (keep the `.claude/` folder).
+1. Copy everything inside `template/` into the new project's root, including the hidden `.claude/` folder.
 2. Start Claude Code there and say: *"Read GUIDELINES.md, then fill in CLAUDE.md, docs/SESSION_HANDOFF.md and
    docs/IDEAS.md for this project. Ask me what you need to know."*
 3. After the first working version: *"Update CLAUDE.md with the real commands, project map and release specifics, set
    the deny rules and the hook's test settings."*
 
-## What's here
+## What's in `template/`
 
 | Path | What it is |
 | --- | --- |
