@@ -11,7 +11,7 @@ Use these for every new project. The templates in this folder follow them.
 | `docs/IDEAS.md` | **Ideas ledger**: one line per idea tried, adopted, rejected or open | When an idea is added or tested | Searched (not read) before proposing or testing an idea |
 | `docs/HANDOFF_ARCHIVE.md` | **History**: full write-ups of experiments and decisions, finished work | Appended to | Only when a task needs the history |
 
-Plus four subagents in `.claude/agents/`: `planner.md` (Opus, high effort, plans changes before they're built), `explorer.md` (Haiku, low effort, read-only search), `reviewer.md` (Sonnet, high effort, reviews a finished branch) and `analyst.md` (Opus, high effort, designs experiments and judges results; delete it if the project has none). `.claude/settings.json` sets the main session to Sonnet at medium effort, blocks reading of files that waste context, and wires the after-edit hook. `.claude/rules/hard-area.md` is a template for rules that load only when one area's files are opened.
+Plus four subagents in `.claude/agents/`: `planner.md` (Opus, high effort, plans changes before they're built), `explorer.md` (Haiku, low effort, read-only search), `reviewer.md` (Opus, high effort, reviews a finished branch; Sonnet for docs-only branches) and `analyst.md` (Opus, high effort, designs experiments and judges results; delete it if the project has none). `.claude/settings.json` sets the main session to Sonnet at medium effort, blocks reading of files that waste context, and wires the after-edit hook. `.claude/rules/hard-area.md` is a template for rules that load only when one area's files are opened.
 
 ## Skills hold the process; CLAUDE.md holds the specifics
 
@@ -40,7 +40,10 @@ and both the Claude app and Claude Code honor them, so the right effort is picke
 - **Main session:** Sonnet at medium. In Claude Code, `.claude/settings.json` sets it (`"model": "sonnet"`,
   `"effortLevel": "medium"`); in the Claude app, keep the model picker on Sonnet.
 - **Planner** (Opus, high): plans anything bigger than a small fix and every change in a hard area.
-- **Analyst** (Opus, high), **explorer** (Haiku, low), **reviewer** (Sonnet, high): as their files say.
+- **Reviewer** (Opus, high): the final review of every branch that changes code; dispatched on Sonnet only for
+  branches that change nothing but docs, config or wording. One review per branch is rare and catches the bugs that
+  don't crash, so it's where Opus pays most.
+- **Analyst** (Opus, high), **explorer** (Haiku, low): as their files say.
 
 Why not `opusplan` (Opus in plan mode, Sonnet otherwise): it uses one effort level for both, so Opus plans at medium
 unless someone raises it by hand, and every plan-mode toggle is a model switch that re-reads the whole conversation

@@ -59,7 +59,7 @@ keeping the model picker on Sonnet. Judgment work goes to subagents, each pinned
 | Planning anything bigger than a small fix, architecture or data-model decisions, and any change in a hard area | `planner` subagent | Opus · high |
 | Designing experiments and judging their results (delete `analyst.md` if the project has none) | `analyst` subagent | Opus · high |
 | Searching the repo and docs (don't read large folders or data files in the main session) | `explorer` subagent | Haiku · low |
-| Reviewing a finished branch (run it on Opus if the branch touches a hard area) | `reviewer` subagent | Sonnet · high |
+| Reviewing a finished branch (dispatch it with model sonnet if the branch only changes docs, config or wording) | `reviewer` subagent | Opus · high |
 
 **How a planned task runs:** the main session (often with the explorer) gathers the task, the relevant files and any
 related `IDEAS.md` rows, briefs the planner with all of it (the planner doesn't see this conversation), shows me the plan
@@ -85,7 +85,7 @@ They work alongside the routing above; this file takes precedence over them. Siz
 - **Executing:** use executing-plans inline by default. Use subagent-driven-development only for tasks that are truly
   independent of each other, and give every subagent an explicit model, as that skill requires.
 - **Reviewing:** one review per branch. When a skill asks for a code review, run the `reviewer` subagent with that
-  skill's template; on Opus for hard areas or large branches, otherwise Sonnet.
+  skill's template (Opus; Sonnet only for docs, config or wording-only branches).
 - **Worktrees:** fine to use; the after-edit hook tests the checkout being edited.
 
 ## Release and handoff specifics (read by /release and /handoff)

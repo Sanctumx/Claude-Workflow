@@ -26,7 +26,7 @@ questions, fills everything in and checks it. The manual steps below do the same
 | `docs/IDEAS.md` | One row per idea tried, adopted, rejected or open |
 | `docs/HANDOFF_ARCHIVE.md` | Full write-ups, read only when needed |
 | `.claude/settings.json` | Main session on Sonnet at medium effort, deny-read rules, the after-edit hook, the status line |
-| `.claude/agents/` | `planner` (Opus), `analyst` (Opus), `explorer` (Haiku), `reviewer` (Sonnet), each with its own effort |
+| `.claude/agents/` | `planner` (Opus), `analyst` (Opus), `reviewer` (Opus), `explorer` (Haiku), each with its own effort |
 | `.claude/rules/hard-area.md` | Template for rules that load only when one area's files are opened |
 | `.claude/hooks/after-edit.mjs` | Runs fast unit tests after edits; warns when the handoff grows too long |
 | `.claude/statusline.mjs` | Status line: context, plan usage, cache, branch, and when to `/clear` |
