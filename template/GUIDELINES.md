@@ -54,6 +54,23 @@ switch back after. Leaving the main session on Opus for routine work costs about
 should be refused); edit a tested file (the tests should run). The status line shows only in Claude Code's terminal;
 the VS Code extension shows context and the cache clock in the prompt box instead.
 
+## Working with the superpowers skills
+
+The superpowers plugin (brainstorming, writing-plans, executing-plans, test-driven-development, systematic-debugging,
+verification-before-completion, code review, worktrees) fits this setup. It defers to `CLAUDE.md`, so the
+"Superpowers skills" section there decides how it's used. Three rules keep the two from doubling up:
+
+1. **Size the process to the task.** Small fixes skip brainstorming, plan files and worktrees, but keep test-first and
+   verification. Medium tasks use the planner's short plan. Only big features or hard-area changes run the full flow.
+   A full feature cycle reads about 20,000 tokens of skill text, worth it for a feature and wasted on a tooltip.
+2. **One planner, one reviewer.** The `planner` subagent (Opus) does writing-plans' thinking and the main session
+   saves the file; the `reviewer` subagent runs any review a skill asks for, with that skill's template. No second
+   planner or reviewer on the same work.
+3. **Inline execution by default.** executing-plans runs well on a Sonnet main session. subagent-driven-development
+   starts a fresh implementer and reviewer per task: use it only for independent tasks, with explicit models.
+
+Worktrees are safe: the after-edit hook runs the tests in the checkout being edited, not the main one.
+
 ## Size budgets
 
 Every session pays to read `CLAUDE.md` and the handoff before doing any work, on whatever model you are using.

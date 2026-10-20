@@ -27,7 +27,9 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 ## Workflow
 
 1. **Branch** from an up-to-date main: `git fetch origin && git checkout -b <short-name> origin/main`.
-2. **Design first** for anything bigger than a small fix: a short spec in `docs/specs/`, approved by me before building.
+2. **Design first** for anything bigger than a small fix, sized as in "Superpowers skills": a medium task gets the
+   planner's plan in the chat; a big feature gets a spec in `docs/specs/` (or wherever the brainstorming skill saves it),
+   approved by me before building.
 3. **Test first** where practical: write the failing test, watch it fail, make it pass.
 4. **Commit** in small steps with a type prefix: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 5. **Review** before merging a feature: run the tests and linter, then the `reviewer` subagent reads the whole branch diff. Fix what matters, each fix with a test.
@@ -68,6 +70,23 @@ may need Opus in the main session. Tell me, since only I can switch (`/model opu
 one hard question, `ultrathink` in that prompt deepens one turn without changing settings.
 
 **Hard areas** (subtle mistakes, no crash when wrong): <e.g. `src/engine.js` win-probability math, auth, payments, migrations>
+
+## Superpowers skills
+
+They work alongside the routing above; this file takes precedence over them. Size the process to the task:
+
+| Task | Process |
+| --- | --- |
+| Small fix, UI tweak, copy or docs change | Just do it: test first where there's a test, and verify before saying done. No brainstorming, plan file or worktree. |
+| Medium task (a few files, clear goal) | The `planner` subagent's short plan in the chat, approved by me; then test-first and verification. |
+| Big feature, or anything that changes a hard area | Full flow: brainstorming (main session, it needs me), then the `planner` drafts the writing-plans document from that skill's format and the main session saves it, then executing-plans inline, then one review. |
+
+- **Planning:** writing-plans' thinking is done by the `planner` subagent (Opus); the main session only saves the file.
+- **Executing:** use executing-plans inline by default. Use subagent-driven-development only for tasks that are truly
+  independent of each other, and give every subagent an explicit model, as that skill requires.
+- **Reviewing:** one review per branch. When a skill asks for a code review, run the `reviewer` subagent with that
+  skill's template; on Opus for hard areas or large branches, otherwise Sonnet.
+- **Worktrees:** fine to use; the after-edit hook tests the checkout being edited.
 
 ## Release and handoff specifics (read by /release and /handoff)
 
