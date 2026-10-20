@@ -156,9 +156,18 @@ branch, plus at most one hint. It runs locally and uses no tokens.
 | `5h` red (80% or more) + "near the 5-hour limit" | The plan window is nearly used up | `/handoff` now, so nothing is lost if the limit hits mid-task |
 
 Thresholds are in tokens, not percent: on a 1M-token window, "half full" is 500K tokens, long past the point where
-a fresh chat is cheaper. A fresh session already starts around 35K (system, tools, skills, `CLAUDE.md`), so 150K is
-about 115K of real work. Without the status line (the VS Code panel, the Claude app), `/context` shows the same
-number; apply the same 150K / 300K rule. The thresholds are constants at the top of the script.
+a fresh chat is cheaper. The rule is about the conversation itself, which `/context` shows as **Messages**: plan a
+break past about **115K of Messages**, stop past about **265K**. The total adds a fixed start-up cost (system prompt,
+tools, skills, `CLAUDE.md`) that differs by surface:
+
+| Surface | Fresh session starts at | Plan a break at (total) | Stop at (total) |
+| --- | --- | --- | --- |
+| Claude Code terminal, VS Code | about 35K | 150K | 300K |
+| Claude app (desktop, web) | about 95K, mostly connector tools | about 210K | about 360K |
+
+So in the app a 150K total is only about 55K of work; read the Messages line, not the total. Measure your own
+start-up cost once with `/context` in a fresh chat; turning off unused integrations lowers it. The status line
+(terminal only) adds `CTX_BASELINE` (default 35000) to the two budgets; set it if your fresh total is different.
 
 ## End-of-session routine
 

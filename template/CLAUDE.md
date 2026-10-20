@@ -44,7 +44,9 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - **Hook** (`.claude/hooks/after-edit.mjs`): after an edit to tested code it runs the unit tests and reports failures;
   after an edit to the handoff it warns past 150 lines. Fix what it reports before moving on.
 - **Status line** (`.claude/statusline.mjs`): model and effort, context %, 5-hour plan usage, cache state, branch,
-  and a hint when it's time to `/handoff` and `/clear` (cues in `GUIDELINES.md`).
+  and a hint when it's time to `/handoff` and `/clear` (cues in `GUIDELINES.md`). It shows only in the terminal. In
+  the Claude app or VS Code panel, run `/context` and plan a break once **Messages** passes about 115K (stop past
+  about 265K), whatever the total says: the app starts around 95K before any work.
 
 ## Model routing
 
