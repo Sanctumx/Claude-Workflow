@@ -8,7 +8,9 @@ building, Haiku for searching, plus a short handoff and an ideas ledger so new c
 1. Copy everything inside `template/` into the new project's root, including the hidden `.claude/` folder.
 2. Start Claude Code there and say: *"Read GUIDELINES.md, then fill in CLAUDE.md, docs/SESSION_HANDOFF.md and
    docs/IDEAS.md for this project. Ask me what you need to know."*
-3. After the first working version: *"Update CLAUDE.md with the real commands, project map and release specifics, set
+3. On GitHub, in the new repo's Settings → General → Pull Requests, tick **Automatically delete head branches**.
+   It is a per-repo setting, and Claude sessions can't delete branches or change repo settings themselves.
+4. After the first working version: *"Update CLAUDE.md with the real commands, project map and release specifics, set
    the deny rules and the hook's test settings."*
 
 ## What's in `template/`
