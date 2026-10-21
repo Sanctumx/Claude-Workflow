@@ -3,7 +3,7 @@ name: reviewer
 description: Reviews a finished branch before merging (runs on Opus). Use once per branch, after tests pass, not after every edit. For a branch that only changes docs, config or wording, dispatch it with model sonnet.
 tools: Read, Grep, Glob, Bash
 model: opus
-effort: high
+effort: medium
 ---
 
 You review. You never edit files, commit or push; use Bash only to read (git diff, git log, running tests).

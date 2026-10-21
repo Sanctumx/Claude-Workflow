@@ -43,9 +43,9 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - **Path rules** (`.claude/rules/`): rules for one area load only when its files are opened.
 - **Hook** (`.claude/hooks/after-edit.mjs`): after an edit to tested code it runs the unit tests and reports failures;
   after an edit to the handoff it warns past 150 lines. Fix what it reports before moving on.
-- **Context hooks** (`.claude/hooks/context-warn.mjs`, `context-stop.mjs`): once the conversation passes about 115K
-  tokens (stop past 265K) I get a one-line warning and you get the same instruction: finish the current task, don't
-  start further plan tasks, run `/handoff`, then tell me to `/clear`. If a turn ends past 115K with no handoff
+- **Context hooks** (`.claude/hooks/context-warn.mjs`, `context-stop.mjs`): once the conversation passes about 60K
+  tokens (stop past 120K) I get a one-line warning and you get the same instruction: finish the current task, don't
+  start further plan tasks, run `/handoff`, then tell me to `/clear`. If a turn ends past 60K with no handoff
   recorded, the Stop hook makes you run it once. They work in the app's Claude Code tab, VS Code and the terminal, and
   measure the start-up cost from the session log (no need to run `/context`); `CTX_BASELINE` overrides it.
 - **Status line** (`.claude/statusline.mjs`): model and effort, context %, 5-hour plan usage, cache state, branch,
@@ -63,10 +63,10 @@ keeping the model picker on Sonnet. Judgment work goes to subagents, each pinned
 | Work | Who does it | Model · effort |
 | --- | --- | --- |
 | Building: UI, pages, plumbing, config, docs, carrying out plans | Main session | Sonnet · medium |
-| Planning anything bigger than a small fix, architecture or data-model decisions, and any change in a hard area | `planner` subagent | Opus · high |
+| Planning anything bigger than a small fix, architecture or data-model decisions, and any change in a hard area | `planner` subagent | Opus · medium (dispatch with effort high for a hard area) |
 | Designing experiments and judging their results (delete `analyst.md` if the project has none) | `analyst` subagent | Opus · high |
 | Searching the repo and docs (don't read large folders or data files in the main session) | `explorer` subagent | Haiku · low |
-| Reviewing a finished branch (dispatch it with model sonnet if the branch only changes docs, config or wording) | `reviewer` subagent | Opus · high |
+| Reviewing a finished branch (dispatch it with model sonnet if the branch only changes docs, config or wording) | `reviewer` subagent | Opus · medium (dispatch with effort high for a hard area) |
 
 **How a planned task runs:** the main session (often with the explorer) gathers the task, the relevant files and any
 related `IDEAS.md` rows, briefs the planner with all of it (the planner doesn't see this conversation), shows me the plan
@@ -88,6 +88,11 @@ They work alongside the routing above; this file takes precedence over them. Siz
 | Medium task (a few files, clear goal) | The `planner` subagent's short plan in the chat, approved by me; then test-first and verification. |
 | Big feature, or anything that changes a hard area | Full flow: brainstorming (main session, it needs me), then the `planner` drafts the writing-plans document from that skill's format and the main session saves it, then executing-plans inline, then one review. |
 
+- **Skill budget** (overrides using-superpowers' "invoke at 1% chance"): for small and medium tasks don't load
+  test-driven-development or executing-plans; the test-first rule in this file is enough. Load them only for a big
+  feature. Never run writing-plans or executing-plans as subagents.
+- **Main model:** the session must be on Sonnet. The VS Code panel's and the app's model picker override
+  `settings.json`; if the session reports Opus, tell me to switch the picker back.
 - **Planning:** writing-plans' thinking is done by the `planner` subagent (Opus); the main session only saves the file.
 - **Executing:** use executing-plans inline by default. Use subagent-driven-development only for tasks that are truly
   independent of each other, and give every subagent an explicit model, as that skill requires.

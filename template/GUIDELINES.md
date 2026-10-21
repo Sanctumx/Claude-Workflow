@@ -39,16 +39,17 @@ Pin judgment work to subagents and keep the main session on one model. Each suba
 and both the Claude app and Claude Code honor them, so the right effort is picked without anyone touching a setting.
 
 - **Main session:** Sonnet at medium. In Claude Code, `.claude/settings.json` sets it (`"model": "sonnet"`,
-  `"effortLevel": "medium"`); in the Claude app, keep the model picker on Sonnet.
-- **Planner** (Opus, high): plans anything bigger than a small fix and every change in a hard area.
-- **Reviewer** (Opus, high): the final review of every branch that changes code; dispatched on Sonnet only for
+  `"effortLevel": "medium"`); in the Claude app and the VS Code panel, keep the model picker on Sonnet: the picker overrides `settings.json`,
+  so a session can silently run on Opus. Ask "which model are you?" at the start if in doubt.
+- **Planner** (Opus, medium; dispatched with effort high for a hard area): plans anything bigger than a small fix and every change in a hard area.
+- **Reviewer** (Opus, medium; effort high for a hard area): the final review of every branch that changes code; dispatched on Sonnet only for
   branches that change nothing but docs, config or wording. One review per branch is rare and catches the bugs that
   don't crash, so it's where Opus pays most.
 - **Analyst** (Opus, high), **explorer** (Haiku, low): as their files say.
 
 Why not `opusplan` (Opus in plan mode, Sonnet otherwise): it uses one effort level for both, so Opus plans at medium
 unless someone raises it by hand, and every plan-mode toggle is a model switch that re-reads the whole conversation
-uncached. A planner subagent gets high effort automatically and leaves the main session's cache alone. Its cost: it
+uncached. A planner subagent gets its effort automatically and leaves the main session's cache alone. Its cost: it
 doesn't see the conversation, so the main session has to brief it well.
 
 Escalate the main session to Opus only for a bug Sonnet has failed twice or a long stretch of hard-area edits, and
@@ -72,6 +73,11 @@ verification-before-completion, code review, worktrees) fits this setup. It defe
    planner or reviewer on the same work.
 3. **Inline execution by default.** executing-plans runs well on a Sonnet main session. subagent-driven-development
    starts a fresh implementer and reviewer per task: use it only for independent tasks, with explicit models.
+
+4. **Skill budget.** using-superpowers says to invoke a skill at "even a 1% chance"; left alone, that loads
+   test-driven-development and executing-plans on every small task (about 11% of a week's usage in one project).
+   `CLAUDE.md` overrides it: those skills only for big features, and writing-plans / executing-plans never as
+   subagents.
 
 Worktrees are safe: the after-edit hook runs the tests in the checkout being edited, not the main one.
 
@@ -157,16 +163,17 @@ branch, plus at most one hint. It runs locally and uses no tokens.
 
 Thresholds are in tokens, not percent: on a 1M-token window, "half full" is 500K tokens, long past the point where
 a fresh chat is cheaper. The rule is about the conversation itself, which `/context` shows as **Messages**: plan a
-break past about **115K of Messages**, stop past about **265K**. The total adds a fixed start-up cost (system prompt,
+break past about **60K of Messages**, stop past about **120K**. The total adds a fixed start-up cost (system prompt,
 tools, skills, `CLAUDE.md`) that differs by surface:
 
 | Surface | Fresh session starts at | Plan a break at (total) | Stop at (total) |
 | --- | --- | --- | --- |
-| Claude Code terminal, VS Code | about 35K | 150K | 300K |
-| Claude app (desktop, web) | about 95K, mostly connector tools | about 210K | about 360K |
+| Claude Code terminal, VS Code | about 35K | 95K | 155K |
+| Claude app (desktop, web) | about 95K, mostly connector tools | about 155K | about 215K |
 
 So in the app a 150K total is only about 55K of work; read the Messages line, not the total. Turning off unused
-integrations lowers the start-up cost.
+integrations (MCP connectors via `/mcp`, plugins via `enabledPlugins`) lowers the start-up cost. The lower thresholds
+(they were 115K / 265K) came from a usage report: a third of a week's usage was spent past 150K of context.
 
 You never need to run `/context` to calibrate anything. A hook or Claude can't run it (it is a built-in command whose
 output goes to the screen), but every reply in the session log records its token total, and the start-up cost is the
@@ -181,10 +188,10 @@ Two hooks share `.claude/hooks/context-usage.mjs`, which reads each reply's toke
 subtracts the start-up cost measured as above. A session with a single reply never warns. Both run locally, use no
 tokens, and stay silent on any error.
 
-- `context-warn.mjs` (UserPromptSubmit) shows you one line past 115K / 265K of conversation and gives Claude the same
-  instruction: past 115K finish the current task, don't autorun further tasks, run the handoff routine, tell you to
-  `/clear`; past 265K finish only the step in progress. It replaces running `/context` by hand.
-- `context-stop.mjs` (Stop) fires when a turn ends past 115K with no handoff recorded this session, and blocks the stop
+- `context-warn.mjs` (UserPromptSubmit) shows you one line past 60K / 120K of conversation and gives Claude the same
+  instruction: past 60K finish the current task, don't autorun further tasks, run the handoff routine, tell you to
+  `/clear`; past 120K finish only the step in progress. It replaces running `/context` by hand.
+- `context-stop.mjs` (Stop) fires when a turn ends past 60K with no handoff recorded this session, and blocks the stop
   once so Claude runs `/handoff` then. Waiting for the turn to end means the task finishes first. It fires once per
   session and never loops. A session where `/handoff` or `/release` already ran is skipped.
 
