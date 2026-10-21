@@ -86,7 +86,8 @@ Worktrees are safe: the after-edit hook runs the tests in the checkout being edi
 Every session pays to read `CLAUDE.md` and the handoff before doing any work, on whatever model you are using.
 
 - `CLAUDE.md`: about **100 lines**.
-- `SESSION_HANDOFF.md`: about **150 lines / 8 KB** (roughly 2,000 tokens).
+- `SESSION_HANDOFF.md`: aim for about **6 KB**; the after-edit hook warns past **150 lines or 8 KB** (roughly 2,000
+  tokens). Bytes matter more than lines: a 113-line handoff was 12 KB because a few "lines" were paragraphs.
 - `IDEAS.md`: one line per idea, no total limit. It is searched with the explorer subagent, not read whole.
 - `HANDOFF_ARCHIVE.md`: no limit, because nothing reads it by default.
 
@@ -102,6 +103,11 @@ For scale: an 85 KB handoff costs about 20,000 tokens at the start of every sess
 - The reasoning, numbers and runs behind a decision → archive. The handoff line points to it.
 - A decision that was replaced → archive.
 - An idea, feature or experiment (tried or not) → one row in `IDEAS.md`; its full write-up → archive.
+- Stable reference that changes rarely (the current model, defaults, architecture, data layout) → its own file
+  (e.g. `docs/MODEL.md`) that the handoff points to in one line. It is read when a task needs it, not every session.
+- **Trim by moving, not deleting.** Paste removed handoff lines unchanged into the archive under a dated "Handoff lines
+  trimmed" heading, so nothing is lost and a later session can search for it. Only exact duplicates of `CLAUDE.md` may
+  simply go.
 - A finished open item → delete it from the handoff; its `IDEAS.md` row now says Adopted or Rejected.
 - Anything already written elsewhere (a spec, a README, the code) → a link, never a copy.
 
