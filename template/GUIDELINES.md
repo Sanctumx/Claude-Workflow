@@ -139,6 +139,22 @@ has its first real files, and revisit when large files appear.
    tested code and reports only failures, so breakage is caught on the edit that caused it. It also warns when the
    handoff passes its budget. Set `testOn` and `testCmd` at the top of the file; keep it to tests that run in seconds.
 
+### Skills and connectors per project
+
+Every skill's name and description, and every connector's instructions and some of its tools, are sent with every
+request whether or not they're used. Turn off what a project doesn't need in its committed `.claude/settings.json`,
+so it applies automatically in that project and nowhere else:
+
+- **claude.ai skills:** `"skillOverrides": { "pptx": "off", ... }`, using the short names (the `name:` in each
+  `~/.claude/skills/synced/*/<skill>/SKILL.md`). `"off"` hides it from Claude and the `/` menu;
+  `"user-invocable-only"` hides it from Claude but keeps `/name`. Keep `handoff` and `release` on: the context hooks
+  have Claude run `/handoff` itself. The `/skills` menu can write this too (Space to cycle, Esc to save). Plugin
+  skills (superpowers) aren't affected; a plugin is only on or off as a whole, through `/plugin`.
+- **claude.ai connectors:** `"disableClaudeAiConnectors": true` (the template default) drops all of them. Remove it
+  in projects that use one; to block just one, list it in `deniedMcpServers` by name (e.g. `"claude.ai Slack"`).
+  There's no "ask before turning on": MCP tool search already loads most tools only when Claude looks them up, and
+  `/mcp` toggles a connector per project when the switch above isn't set.
+
 ## When to release, compact or clear
 
 - **Release** (commit, push, deploy) when a unit of work is finished and verified: a feature, a fix, an idea that changed status. Never mid-feature, never before an experiment is confirmed.

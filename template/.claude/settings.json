@@ -1,6 +1,8 @@
 {
   "model": "sonnet",
   "effortLevel": "medium",
+  "disableClaudeAiConnectors": true,
+  "skillOverrides": {},
   "permissions": {
     "deny": [
       "Read(./.env)",
