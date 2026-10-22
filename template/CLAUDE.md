@@ -15,6 +15,9 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 ## Standing rules
 
 - Push, merge or deploy only when I say "push" (or run /release).
+- Keep running plan tasks back to back unless something needs my input; but once a task has taken the conversation past
+  the context limit (Messages past about 60K in `/context`), finish that task, record it, and do not autorun further
+  tasks: tell me to `/handoff` and `/clear`.
 - <Add your own: e.g. "never deploy to X unless asked", "report results in Y metric".>
 
 ## Commands
@@ -121,3 +124,4 @@ They work alongside the routing above; this file takes precedence over them. Siz
 ## Gotchas
 
 - <Things that went wrong before and how to avoid them. One line each.>
+- On Windows, Bash heredocs with apostrophes in the text break: write such files with the Write tool instead.
