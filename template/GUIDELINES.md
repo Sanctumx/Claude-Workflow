@@ -120,6 +120,12 @@ For scale: an 85 KB handoff costs about 20,000 tokens at the start of every sess
 5. **No duplication between files.** If it is in `CLAUDE.md`, the handoff doesn't repeat it.
 6. **Name the hard areas.** Listing the parts of the code where mistakes are subtle (core math, data model, auth, payments) tells future sessions when to use Opus and the Opus reviewer.
 
+## Scripts the user runs
+
+Long jobs the user starts by hand (a .bat on Windows, a shell script elsewhere) should be quiet: one updating "Estimated time
+remaining" line (elapsed / steps done x steps left), results written to a file, and the window closes itself at the end.
+Put the rule in the project's standing rules so every new script follows it.
+
 ## Tracking ideas
 
 - **Before proposing or testing an idea,** the explorer subagent searches `IDEAS.md` (and the archive if needed) for related keywords and reports matches with their status. A Rejected idea is re-tested only when something changed: new data, a different format, a bug found in the old test. Say what changed.
