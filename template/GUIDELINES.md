@@ -145,6 +145,25 @@ has its first real files, and revisit when large files appear.
    tested code and reports only failures, so breakage is caught on the edit that caused it. It also warns when the
    handoff passes its budget. Set `testOn` and `testCmd` at the top of the file; keep it to tests that run in seconds.
 
+### Permission prompts (`permissions.allow` / `ask`)
+
+Prompt fatigue makes people approve everything blindly, so keep prompts only where they protect something. Rule of thumb:
+ask for what is hard to undo or leaves the machine; allow the rest.
+
+- **Allow:** read-only commands (many are auto-allowed already), routine local git (`add`, `commit`, `checkout`,
+  `switch`, `stash`, `worktree add`), tests, and the exact build command. Local git is recoverable from the reflog.
+- **Ask:** `git push`, merging, deploys, and anything that discards work (`reset --hard`, `clean`, `branch -D`,
+  `checkout -- <file>`, `checkout -f`, `switch -f`, `stash drop`, `rm -rf`). Ask rules beat allow rules, so a broad allow
+  like `git checkout:*` can sit next to specific asks.
+- **Never allow** anything that runs arbitrary code: interpreters (`python`, `node -e`), shells, package runners, `make *`,
+  `npm run *`, `gh api *`, and `git rebase` with a wildcard (`--exec` runs shell commands; allow only the exact forms).
+  Interpreter wildcards also bypass the deny-read rules above, since code can read the files Claude may not.
+- **Most prompts come from compound commands, not the commands themselves:** `cd x && <write>` is checked as a write, and
+  `python - <<EOF` patch scripts are code. Tell Claude to use Edit/Write for file changes and to run from the repo root.
+- **Turn a long build chain into one script** (e.g. `.claude/scripts/build.mjs`) with one exact allow rule. The script
+  can hard-code the single path it deletes, which no wildcard rule can promise.
+- To find what to allow, scan recent transcripts for the most frequent commands (the `fewer-permission-prompts` skill).
+
 ### Skills and connectors per project
 
 Every skill's name and description, and every connector's instructions and some of its tools, are sent with every

@@ -18,6 +18,8 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - Keep running plan tasks back to back unless something needs my input; but once a task has taken the conversation past
   the context limit (Messages past about 60K in `/context`), finish that task, record it, and do not autorun further
   tasks: tell me to `/handoff` and `/clear`.
+- Change files with the Edit/Write tools, not `python - <<EOF` or `sed -i` patch scripts, and run commands from the repo
+  root without a `cd` prefix; both trigger permission prompts.
 - <Add your own: e.g. "never deploy to X unless asked", "report results in Y metric".>
 
 ## Commands
