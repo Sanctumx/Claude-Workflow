@@ -29,6 +29,11 @@ questions, fills everything in and checks it. The manual steps below do the same
 | `.claude/agents/` | `planner` (Opus), `analyst` (Opus), `reviewer` (Opus), `explorer` (Haiku), each with its own effort |
 | `.claude/rules/hard-area.md` | Template for rules that load only when one area's files are opened |
 | `.claude/hooks/after-edit.mjs` | Runs fast unit tests after edits; warns when the handoff grows too long |
+| `docs/handoffs/` | One notes file per branch (`<branch>.md`), so parallel sessions never edit the same file |
+| `.claude/scripts/branches.mjs` | Start-of-session report of every branch in flight (SessionStart hook); read-only |
+| `.claude/scripts/ledger.mjs` | `setup` / `next` / `land`: the ledger worktree where the handoff, ideas and archive are edited and landed on main |
+| `.claude/hooks/before-edit.mjs` | PreToolUse: blocks edits of the three shared files off main and off the `ledger` branch |
+| `.githooks/pre-commit` | The same guard at commit time (`git config core.hooksPath .githooks`) |
 | `.claude/hooks/context-warn.mjs` | Warns you before a prompt is sent when the conversation passes 115K / 265K tokens, and tells Claude to finish the task and hand off |
 | `.claude/hooks/context-stop.mjs` | Stop hook: past 115K with no handoff yet, makes Claude run `/handoff` once when its turn ends |
 | `.claude/hooks/context-usage.mjs` | Shared token-count reader and thresholds for the two context hooks |
