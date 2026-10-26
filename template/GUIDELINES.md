@@ -259,5 +259,8 @@ state that no longer exists.
 2. Update `IDEAS.md` rows for anything tested or shipped; move finished items and replaced decisions to the archive.
 3. Check the size. If the handoff is over budget, archive the oldest material until it fits.
 4. Change `CLAUDE.md` only when a rule, command or model-routing choice changed.
+5. End the report with a **message to paste** into the fresh chat after `/clear` (first step, branch or worktree, what waits on
+   the user, "run `branches.mjs`, then read the handoff"). The user clears after every handoff and should never have to
+   re-explain. The rule lives in the project's "Release and handoff specifics", which `/handoff` reads.
 
 The `/handoff` skill runs this routine the same way every time, without pushing.
