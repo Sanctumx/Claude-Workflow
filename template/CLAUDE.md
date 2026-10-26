@@ -134,6 +134,7 @@ They work alongside the routing above; this file takes precedence over them. Siz
 - **Handoff also tracks:** <versions or links worth keeping current, or "nothing extra">
 - **Build check:** <what to build and test before a release, and when it's needed>
 - **Deploy:** <what pushing or merging deploys, and anything never to do>
+- **Handoff report ends with a paste message:** after the "Next session starts with" line, give a fenced block (about 8 lines) to paste into the fresh chat after `/clear`: the first step, the branch or worktree, what is waiting on me, and to run `node .claude/scripts/branches.mjs` and read the handoff first.
 - **Never during /release or /handoff:** <e.g. "use my computer", or "nothing">
 
 ## Project map
