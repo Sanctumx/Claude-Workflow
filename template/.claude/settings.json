@@ -15,11 +15,34 @@
       "Bash(git show:*)",
       "Bash(node .claude/scripts/branches.mjs:*)",
       "Bash(node .claude/scripts/ledger.mjs next:*)",
-      "Bash(node .claude/scripts/ledger.mjs setup:*)"
+      "Bash(node .claude/scripts/ledger.mjs setup:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git stash:*)",
+      "Bash(git rebase origin/main)",
+      "Bash(git rebase --continue)",
+      "Bash(git rebase --abort)",
+      "Bash(git worktree add:*)"
     ],
     "ask": [
       "Bash(git push:*)",
-      "Bash(node .claude/scripts/ledger.mjs land:*)"
+      "Bash(node .claude/scripts/ledger.mjs land:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git checkout -- :*)",
+      "Bash(git checkout:* -- :*)",
+      "Bash(git checkout .)",
+      "Bash(git checkout -f:*)",
+      "Bash(git checkout -B:*)",
+      "Bash(git switch -f:*)",
+      "Bash(git switch --discard-changes:*)",
+      "Bash(git switch -C:*)",
+      "Bash(git stash drop:*)",
+      "Bash(git stash clear:*)",
+      "Bash(rm -rf:*)"
     ],
     "deny": [
       "Read(./.env)",
