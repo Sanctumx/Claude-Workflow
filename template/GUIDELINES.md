@@ -219,6 +219,21 @@ tokens, and stay silent on any error.
 
 `/clear` itself can't be run by a hook or by Claude, so it stays your step.
 
+## Working on several areas at once
+
+The failure to design against: each branch edits its own copy of the handoff and ideas ledger, so a result recorded on an
+unmerged branch is invisible to every other session, idea numbers collide, and the handoff on main describes a project
+state that no longer exists.
+
+- **One area = one branch = one worktree = one session.** Sessions never share a checkout.
+- **Shared records live on main only.** The handoff (global state), the ideas ledger and the archive change in a
+  permanent ledger worktree and land on main by fast-forward push. Hooks refuse the edit anywhere else.
+- **Branch notes travel with the branch** (`docs/handoffs/<branch>.md`); nothing in them needs to be true on main.
+- **State is read from git, not kept by hand.** A script lists every branch (ahead/behind, pushed, landed, worktree,
+  Next line); a hand-kept table of branches rots the way the handoff did.
+- **Claim a number by landing it.** A new idea row lands at once; a rejected push means the number was taken.
+- The push is still the user's call: landing the ledger counts as a push, so it runs on "push" or /release only.
+
 ## End-of-session routine
 
 1. Update the handoff: state, open items, "Next session starts with".

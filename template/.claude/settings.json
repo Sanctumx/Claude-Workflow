@@ -14,9 +14,36 @@
       "Read(**/package-lock.json)",
       "Read(**/yarn.lock)",
       "Read(**/pnpm-lock.yaml)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(node .claude/scripts/ledger.mjs land:*)"
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/branches.mjs\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/before-edit.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",

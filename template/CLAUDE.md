@@ -1,6 +1,6 @@
 # Working on this repo
 
-Read `docs/SESSION_HANDOFF.md` first for the current state of the project. This file only covers how work gets done.
+Run `node .claude/scripts/branches.mjs` first (every branch in flight), then read `docs/SESSION_HANDOFF.md` and your branch's `docs/handoffs/<branch>.md` (see "Parallel sessions" below). This file only covers how work gets done.
 Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are in `docs/HANDOFF_ARCHIVE.md`. Search those
 (with the `explorer` subagent) when a task needs them; don't read them whole.
 
@@ -10,7 +10,7 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
   say so and re-test only if something changed (new data, different format, a bug in the old test).
 - After a test or a shipped feature: edit its row in place (status and the deciding numbers), add the write-up to the
   archive, and update "Decisions in force" in the handoff if it was adopted.
-- New ideas get the next number with status Open. Never delete rows.
+- New ideas get the next number (`node .claude/scripts/ledger.mjs next`) with status Open, landed at once so the number is claimed. Never delete rows. These edits happen in the ledger worktree (see "Parallel sessions").
 
 ## Standing rules
 
@@ -36,7 +36,25 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 3. **Test first** where practical: write the failing test, watch it fail, make it pass.
 4. **Commit** in small steps with a type prefix: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 5. **Review** before merging a feature: run the tests and linter, then the `reviewer` subagent reads the whole branch diff. Fix what matters, each fix with a test.
-6. **Hand off** at the end of a session with `/handoff`: update `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md` and the archive, keep the handoff under about 150 lines, and never push. Pushing is a separate, explicit step.
+6. **Hand off** at the end of a session with `/handoff`: write the branch's notes file `docs/handoffs/<branch>.md`, put the handoff, ideas and archive changes through the ledger worktree (see "Parallel sessions"), keep the handoff under about 150 lines, and never push. Pushing is a separate, explicit step.
+
+## Parallel sessions (several areas at once)
+
+One area = one branch = one worktree = one Claude session. The shared records (`docs/SESSION_HANDOFF.md`,
+`docs/IDEAS.md`, `docs/HANDOFF_ARCHIVE.md`) change on main only, in a permanent **ledger worktree**, so branches
+can't hold diverging copies.
+
+- **Branch notes:** each branch keeps `docs/handoffs/<branch>.md` (State / Decisions / Next), named exactly like the
+  branch and created in its first commit.
+- **Start of a session:** `node .claude/scripts/branches.mjs` lists every branch with ahead/behind main, pushed or
+  not, landed, worktree and its Next line (a SessionStart hook runs it). Then read the handoff and your branch's notes.
+- **Shared records:** `node .claude/scripts/ledger.mjs setup` once (creates `../<repo>-ledger` on branch `ledger`), edit there,
+  commit `docs: ...`, then `node .claude/scripts/ledger.mjs land`. Land checks only the three shared files changed,
+  rebases on `origin/main` and pushes `ledger:main` fast-forward only. It is a push: only when I say "push" or run
+  /release (an ask rule prompts too). `ledger.mjs next` prints the next idea number; landing the row claims it.
+- **Enforced:** `.claude/hooks/before-edit.mjs` (PreToolUse) and `.githooks/pre-commit` refuse edits and commits of the three
+  shared files off main and off `ledger` (override once: `ALLOW_HANDOFF_EDIT=1`). Enable the commit hook once per clone:
+  `git config core.hooksPath .githooks`.
 
 ## Keeping context lean (`.claude/`)
 
@@ -108,7 +126,7 @@ They work alongside the routing above; this file takes precedence over them. Siz
 
 ## Release and handoff specifics (read by /release and /handoff)
 
-- **Files:** `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md`, `docs/HANDOFF_ARCHIVE.md`.
+- **Files:** `docs/SESSION_HANDOFF.md`, `docs/IDEAS.md`, `docs/HANDOFF_ARCHIVE.md` (all via the ledger worktree), `docs/handoffs/<branch>.md` (one per branch). On /handoff write the notes file and commit shared changes in the ledger worktree; on /release land the ledger after the PR.
 - **Results metric:** <how experiment results are reported, or "none">
 - **Mirror the handoff:** <where a copy goes, e.g. a Claude project, or "none">
 - **Handoff also tracks:** <versions or links worth keeping current, or "nothing extra">
