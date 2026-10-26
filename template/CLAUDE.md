@@ -18,6 +18,8 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - Keep running plan tasks back to back unless something needs my input; but once a task has taken the conversation past
   the context limit (Messages past about 60K in `/context`), finish that task, record it, and do not autorun further
   tasks: tell me to `/handoff` and `/clear`.
+- Scripts I run myself (e.g. Windows .bat files for long jobs) show only one updating "Estimated time remaining" line and
+  close on their own when finished: quiet console, everything else to the results file, no `pause`.
 - <Add your own: e.g. "never deploy to X unless asked", "report results in Y metric".>
 
 ## Commands
