@@ -4,6 +4,23 @@
   "disableClaudeAiConnectors": true,
   "skillOverrides": {},
   "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git worktree list:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git show:*)",
+      "Bash(node .claude/scripts/branches.mjs:*)",
+      "Bash(node .claude/scripts/ledger.mjs next:*)",
+      "Bash(node .claude/scripts/ledger.mjs setup:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(node .claude/scripts/ledger.mjs land:*)"
+    ],
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
@@ -14,10 +31,6 @@
       "Read(**/package-lock.json)",
       "Read(**/yarn.lock)",
       "Read(**/pnpm-lock.yaml)"
-    ],
-    "ask": [
-      "Bash(git push:*)",
-      "Bash(node .claude/scripts/ledger.mjs land:*)"
     ]
   },
   "hooks": {

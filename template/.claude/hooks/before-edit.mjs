@@ -32,6 +32,6 @@ if (branch === CONFIG.mainBranch || CONFIG.allowBranches.includes(branch)) proce
 process.stderr.write(
   `Blocked: ${rel} is edited on ${CONFIG.mainBranch} only (this checkout is on ${branch}). ` +
   `Write ${CONFIG.notesDir}/${branch}.md for this branch's notes; for a shared record edit it in the ledger worktree ` +
-  `(node .claude/scripts/ledger.mjs setup; see docs/release-handoff.md "Parallel sessions"). ` +
+  `(node .claude/scripts/ledger.mjs setup; see CLAUDE.md "Parallel sessions"). ` +
   `To override once, set ALLOW_HANDOFF_EDIT=1.\n`);
 process.exit(2);
