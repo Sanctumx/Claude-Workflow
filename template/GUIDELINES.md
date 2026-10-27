@@ -158,6 +158,12 @@ ask for what is hard to undo or leaves the machine; allow the rest.
 - **Never allow** anything that runs arbitrary code: interpreters (`python`, `node -e`), shells, package runners, `make *`,
   `npm run *`, `gh api *`, and `git rebase` with a wildcard (`--exec` runs shell commands; allow only the exact forms).
   Interpreter wildcards also bypass the deny-read rules above, since code can read the files Claude may not.
+- **`git -C <dir> ...` slips past prefix rules.** A rule like `git status:*` or `git push:*` matches only commands that
+  start with it, so `git -C ../wt status` prompts (allow side) and `git -C ../wt push` is not asked about (ask side).
+  Projects that work across worktrees add the mid-wildcard forms to `ask` (`git * push*`, `git * reset --hard*`, ...,
+  as in the template). Check `/permissions` after editing: if the ask count is lower than the file has, a pattern was
+  rejected; add rules in small groups to find it. A bare `Bash` allow is not a way to "allow everything but": the
+  ask rules were not enforced in one session that had it, so keep explicit allows.
 - **Most prompts come from compound commands, not the commands themselves:** `cd x && <write>` is checked as a write, and
   `python - <<EOF` patch scripts are code. Tell Claude to use Edit/Write for file changes and to run from the repo root.
 - **Turn a long build chain into one script** (e.g. `.claude/scripts/build.mjs`) with one exact allow rule. The script
