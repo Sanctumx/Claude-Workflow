@@ -152,9 +152,13 @@ ask for what is hard to undo or leaves the machine; allow the rest.
 
 - **Allow:** read-only commands (many are auto-allowed already), routine local git (`add`, `commit`, `checkout`,
   `switch`, `stash`, `worktree add`), tests, and the exact build command. Local git is recoverable from the reflog.
-- **Ask:** `git push`, merging, deploys, and anything that discards work (`reset --hard`, `clean`, `branch -D`,
-  `checkout -- <file>`, `checkout -f`, `switch -f`, `stash drop`, `rm -rf`). Ask rules beat allow rules, so a broad allow
-  like `git checkout:*` can sit next to specific asks.
+- **Ask:** the template asks only for `git push`, merging (`gh pr merge`, the merge API) and deleting (`rm`, `Remove-Item`,
+  `branch -d/-D`, `worktree remove`), the user's rule (2026-10-28). A longer list (`reset --hard`, `clean`, `checkout --`,
+  `stash drop`, deploys) is the safer default if the user wants more protection, but every extra entry is a prompt. Ask
+  rules beat allow rules, so a broad allow like `git checkout:*` can sit next to specific asks.
+- **Worktrees:** a session started in a fresh worktree does not get the gitignored `settings.local.json`, so put
+  `additionalDirectories` for the sibling worktrees (or their parent folder) in `~/.claude/settings.json`, and
+  `defaultMode` in the committed `.claude/settings.json`; otherwise reads and edits across worktrees prompt.
 - **Never allow** anything that runs arbitrary code: interpreters (`python`, `node -e`), shells, package runners, `make *`,
   `npm run *`, `gh api *`, and `git rebase` with a wildcard (`--exec` runs shell commands; allow only the exact forms).
   Interpreter wildcards also bypass the deny-read rules above, since code can read the files Claude may not.
@@ -165,7 +169,9 @@ ask for what is hard to undo or leaves the machine; allow the rest.
   rejected; add rules in small groups to find it. A bare `Bash` allow is not a way to "allow everything but": the
   ask rules were not enforced in one session that had it, so keep explicit allows.
 - **Most prompts come from compound commands, not the commands themselves:** `cd x && <write>` is checked as a write, and
-  `python - <<EOF` patch scripts are code. Tell Claude to use Edit/Write for file changes and to run from the repo root.
+  `python - <<EOF` patch scripts are code. Tell Claude to use Edit/Write for file changes. A `PreToolUse` Bash hook that
+  blocks `sed -i` and heredoc patch scripts keeps Bash writes from skipping the edit guards and post-edit tests; do not
+  block `cd`, it only matters when Bash is not allowed outright.
 - **Turn a long build chain into one script** (e.g. `.claude/scripts/build.mjs`) with one exact allow rule. The script
   can hard-code the single path it deletes, which no wildcard rule can promise.
 - To find what to allow, scan recent transcripts for the most frequent commands (the `fewer-permission-prompts` skill).

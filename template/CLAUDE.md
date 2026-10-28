@@ -18,8 +18,9 @@ Every idea tried or planned has one line in `docs/IDEAS.md`; full write-ups are 
 - Keep running plan tasks back to back unless something needs my input; but once a task has taken the conversation past
   the context limit (Messages past about 60K in `/context`), finish that task, record it, and do not autorun further
   tasks: tell me to `/handoff` and `/clear`.
-- Change files with the Edit/Write tools, not `python - <<EOF` or `sed -i` patch scripts, and run commands from the repo
-  root without a `cd` prefix; both trigger permission prompts.
+- Change files with the Edit/Write tools, not `python - <<EOF` or `sed -i` patch scripts: a file written through Bash skips
+  the edit guards and the post-edit tests.
+- Permission prompts only for push, merge and delete, in any worktree; everything else proceeds without asking.
 - <Add your own: e.g. "never deploy to X unless asked", "report results in Y metric".>
 
 ## Commands
