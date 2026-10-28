@@ -155,7 +155,9 @@ ask for what is hard to undo or leaves the machine; allow the rest.
 - **Ask:** the template asks only for `git push`, merging (`gh pr merge`, the merge API) and deleting (`rm`, `Remove-Item`,
   `branch -d/-D`, `worktree remove`), the user's rule (2026-10-28). A longer list (`reset --hard`, `clean`, `checkout --`,
   `stash drop`, deploys) is the safer default if the user wants more protection, but every extra entry is a prompt. Ask
-  rules beat allow rules, so a broad allow like `git checkout:*` can sit next to specific asks.
+  rules beat allow rules, so a broad allow like `git checkout:*` can sit next to specific asks. **A bare `Bash` allow
+  overrides the asks**, so the template's `PreToolUse` hook `guard-ask.mjs` answers `ask` for the same commands; keep its
+  list in step with `permissions.ask`.
 - **Worktrees:** a session started in a fresh worktree does not get the gitignored `settings.local.json`, so put
   `additionalDirectories` for the sibling worktrees (or their parent folder) in `~/.claude/settings.json`, and
   `defaultMode` in the committed `.claude/settings.json`; otherwise reads and edits across worktrees prompt.
